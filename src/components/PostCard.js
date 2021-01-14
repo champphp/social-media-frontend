@@ -1,19 +1,15 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Card, Image, Icon, Label } from 'semantic-ui-react'
 import moment from 'moment'
 
+import { AuthContext } from './../context/auth'
+import LikeButton from './LikeButton'
 
 function PostCard({ post }) {
-  const { id, username, body, likeCount, commentCount, createdAt, comments } = post
+  const { user } = useContext(AuthContext)
+  const { id, username, body, likeCount, commentCount, createdAt, likes } = post
 
-  const LikePost = () => {
-    console.log(`Like Post ${id}`)
-  }
-
-  const commentOnPost = () => {
-    console.log(`Show comment ${comments[0].body}`)
-  }
   return (
 
     <Card fluid>
@@ -30,23 +26,26 @@ function PostCard({ post }) {
         </Card.Description>
       </Card.Content>
       <Card.Content extra>
-        <Button as='div' labelPosition='right' onClick={LikePost}>
-          <Button color='teal' basic >
-            <Icon name='heart' />
-      </Button>
-          <Label basic color='teal' pointing='left'>
-            {likeCount}
-      </Label>
-        </Button>
+        <LikeButton user={user} post={{ id, likeCount, likes }} />
 
-        <Button as='div' labelPosition='left' onClick={commentOnPost} > 
+        <Button labelPosition='left' as={Link} to={`/posts/${id}`} >
           <Button color='blue' basic >
             <Icon name='comments' />
-      </Button>
+          </Button>
           <Label basic color='blue' pointing='left'>
             {commentCount}
-      </Label>
+          </Label>
         </Button>
+        {user && user.username === username && (
+          <Button
+            floated='right'
+            as="div"
+            color='red'
+            onClick={() => console.log('post delete')}
+          >
+            <Icon name="trash" style={{ margin: 0 }} />
+          </Button>
+        )}
       </Card.Content>
     </Card>
 
