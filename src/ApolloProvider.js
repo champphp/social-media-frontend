@@ -2,10 +2,11 @@ import React from 'react'
 import { ApolloClient, InMemoryCache, createHttpLink, ApolloProvider } from '@apollo/client'
 import {setContext} from 'apollo-link-context'
 
+import data from './APIKey'
 import App from './App'
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:5000'
+  uri: data.apiUrl,
 })
 
 const authLink = setContext(() => {
@@ -20,8 +21,6 @@ const client = new ApolloClient({
   cache: new InMemoryCache({
     typePolicies: {
       UnconventionalRootQuery: {
-        // The RootQueryFragment can only match if the cache knows the __typename
-        // of the root query object.
         queryType: true,
       },
     },
